@@ -25,11 +25,12 @@ function Invoke-CIPPStandardTeamsMeetingRecordingExpiration {
         UPDATECOMMENTBLOCK
             Run the Tools\Update-StandardsComments.ps1 script to update this comment block
     .LINK
-        https://docs.cipp.app/user-documentation/tenant/standards/list-standards/teams-standards#medium-impact
+        https://docs.cipp.app/user-documentation/tenant/standards/list-standards
     #>
     ##$Rerun -Type Standard -Tenant $Tenant -Settings $Settings 'TeamsMeetingRecordingExpiration'
 
     param($Tenant, $Settings)
+    Test-CIPPStandardLicense -StandardName 'TeamsMeetingRecordingExpiration' -TenantFilter $Tenant -RequiredCapabilities @('MCOSTANDARD', 'MCOEV', 'MCOIMP', 'TEAMS1','Teams_Room_Standard')
 
     # Input validation
     $ExpirationDays = try { [int64]$Settings.ExpirationDays } catch { Write-Warning "Invalid ExpirationDays value provided: $($Settings.ExpirationDays)"; return }
@@ -73,9 +74,8 @@ function Invoke-CIPPStandardTeamsMeetingRecordingExpiration {
     if ($Settings.report -eq $true) {
         Add-CIPPBPAField -FieldName 'TeamsMeetingRecordingExpiration' -FieldValue $CurrentExpirationDays -StoreAs string -Tenant $Tenant
 
-        $CurrentExpirationDays = [PSCustomObject]@{
-            ExpirationDays = [string]$CurrentExpirationDays
-        }
+        $CurrentExpirationDays = if ($StateIsCorrect) { $true } else { $CurrentExpirationDays }
+
         Set-CIPPStandardsCompareField -FieldName 'standards.TeamsMeetingRecordingExpiration' -FieldValue $CurrentExpirationDays -Tenant $Tenant
     }
 }

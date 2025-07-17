@@ -17,6 +17,7 @@ function Invoke-CIPPStandardPhishingSimulations {
             {"type":"autoComplete","multiple":true,"creatable":true,"required":true,"label":"Phishing Simulation Domains","name":"standards.PhishingSimulations.Domains"}
             {"type":"autoComplete","multiple":true,"creatable":true,"required":true,"label":"Phishing Simulation Sender IP Ranges","name":"standards.PhishingSimulations.SenderIpRanges"}
             {"type":"autoComplete","multiple":true,"creatable":true,"required":false,"label":"Phishing Simulation Urls","name":"standards.PhishingSimulations.PhishingSimUrls"}
+            {"type":"switch","label":"Remove extra urls","name":"standards.PhishingSimulations.RemoveExtraUrls","defaultValue":false,"required":false}
         IMPACT
             Medium Impact
         ADDEDDATE
@@ -27,10 +28,11 @@ function Invoke-CIPPStandardPhishingSimulations {
         UPDATECOMMENTBLOCK
             Run the Tools\Update-StandardsComments.ps1 script to update this comment block
     .LINK
-        https://docs.cipp.app/user-documentation/tenant/standards/list-standards/defender-standards#medium-impact
+        https://docs.cipp.app/user-documentation/tenant/standards/list-standards
     #>
 
     param($Tenant, $Settings)
+    Test-CIPPStandardLicense -StandardName 'PhishingSimulations' -TenantFilter $Tenant -RequiredCapabilities @('EXCHANGE_S_STANDARD', 'EXCHANGE_S_ENTERPRISE', 'EXCHANGE_LITE') #No Foundation because that does not allow powershell access
     $PolicyName = 'CIPPPhishSim'
 
     # Fetch current Phishing Simulations Policy settings and ensure it is correctly configured

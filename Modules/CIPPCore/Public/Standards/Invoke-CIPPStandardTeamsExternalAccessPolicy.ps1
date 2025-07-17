@@ -26,10 +26,11 @@ function Invoke-CIPPStandardTeamsExternalAccessPolicy {
         UPDATECOMMENTBLOCK
             Run the Tools\Update-StandardsComments.ps1 script to update this comment block
     .LINK
-        https://docs.cipp.app/user-documentation/tenant/standards/list-standards/teams-standards#medium-impact
+        https://docs.cipp.app/user-documentation/tenant/standards/list-standards
     #>
 
     param($Tenant, $Settings)
+    Test-CIPPStandardLicense -StandardName 'TeamsExternalAccessPolicy' -TenantFilter $Tenant -RequiredCapabilities @('MCOSTANDARD', 'MCOEV', 'MCOIMP', 'TEAMS1','Teams_Room_Standard')
     ##$Rerun -Type Standard -Tenant $Tenant -Settings $Settings 'TeamsExternalAccessPolicy'
 
     $CurrentState = New-TeamsRequest -TenantFilter $Tenant -Cmdlet 'Get-CsExternalAccessPolicy' -CmdParams @{Identity = 'Global' } | Select-Object *
